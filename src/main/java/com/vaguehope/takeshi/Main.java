@@ -13,9 +13,11 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.mongodb.Mongo;
 import com.vaguehope.takeshi.reporter.JvmReporter;
 import com.vaguehope.takeshi.reporter.Reporter;
 import com.vaguehope.takeshi.reporter.SessionReporter;
+import com.vaguehope.takeshi.servlets.DataServlet;
 import com.vaguehope.takeshi.servlets.HelloWorldServlet;
 
 public class Main {
@@ -46,8 +48,12 @@ public class Main {
 		sessionManager.setSessionIdPathParameterName(null);
 		sessionManager.addEventListener(sessionReporter);
 
+		// Services.
+		Mongo mongo = new Mongo();
+
 		// Servlets.
 		servletHandler.addServlet(new ServletHolder(new HelloWorldServlet()), HelloWorldServlet.CONTEXT);
+		servletHandler.addServlet(new ServletHolder(new DataServlet(mongo)), DataServlet.CONTEXT);
 
 		// Static files on classpath.
 		ResourceHandler resourceHandler = new ResourceHandler();
