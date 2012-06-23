@@ -4,5 +4,11 @@ export REPO=$HOME/.m2/repository
 # Local file where dev DB details, etc. will go.
 . $HOME/.takeshi
 
+# Debug mode?
+if [ "debug" = "$1" ] ; then
+  export DEBUG=true
+  echo "DEBUG=$DEBUG"
+fi
+
 # Build and start.
 mvn install && foreman start

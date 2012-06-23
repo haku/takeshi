@@ -1,7 +1,5 @@
 package com.vaguehope.takeshi;
 
-import java.net.URL;
-
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.server.SessionManager;
@@ -57,10 +55,13 @@ public class Main {
 
 		// Static files on classpath.
 		ResourceHandler resourceHandler = new ResourceHandler();
-		resourceHandler.setDirectoriesListed(true);
+		resourceHandler.setDirectoriesListed(false);
 		resourceHandler.setWelcomeFiles(new String[] { "index.html" });
-		URL webroot = Main.class.getResource("/webroot");
-		resourceHandler.setResourceBase(webroot.toExternalForm());
+		resourceHandler.setResourceBase(
+				Boolean.parseBoolean(System.getenv("DEBUG")) ?
+						"./src/main/resources/webroot" :
+						Main.class.getResource("/webroot").toExternalForm()
+				);
 
 		// Prepare final handler.
 		HandlerList handlers = new HandlerList();
