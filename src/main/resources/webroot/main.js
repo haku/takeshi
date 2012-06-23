@@ -1,11 +1,38 @@
 var divCanvas;
 var nextNodeId = 0;
 
-function initTakeshi(div) {
+function initCastleList(div) {
+	var menu = $('<div class="menu">');
+	div.append(menu);
+	$.getJSON('/data', function(data) {
+		var castles = [];
+		$.each(data, function(key, val) {
+			var link = $('<a href="">');
+			link.text('Castle ' + val.id + ': ' + val.name);
+			link.click(function(event) {
+				event.preventDefault();
+				initTakeshi(div, val.id);
+			});
+			menu.append(link);
+		});
+	});
+}
+
+function initTakeshi(div, id) {
 	divCanvas = div;
+	divCanvas.empty();
 	$('#toolbar .add').click(_addNodeClickHandler);
 	divCanvas.dblclick(_canvasDblClickHandler);
 	$('#toolbar .save').click(_saveClickHandler);
+	if (id) {
+		$.getJSON('/data?id=' + id, function(data) {
+			console.log('l', data.nodes);
+			$.each(data.nodes, function (index, node) {
+				console.log('n', node);
+				_addNode(node.pos.left, node.pos.top, node.label);
+			});
+		});
+	}
 }
 
 function _addNodeClickHandler(event) {
@@ -18,10 +45,10 @@ function _canvasDblClickHandler(event) {
 	_addNode(event.pageX, event.pageY);
 }
 
-function _addNode(x, y) {
+function _addNode(x, y, label) {
 	var id = nextNodeId++;
 	var text = $('<p class="text">');
-	text.text(id);
+	text.text(label ? label : id);
 	var node = $('<div class="node">');
 	node.attr('id', 'node' + id);
 	node.append(text);
@@ -70,7 +97,9 @@ function _saveClickHandler(event) {
 			label : label
 		});
 	});
-	var castle = {nodes: nodes};
+	var castle = {
+		nodes : nodes
+	};
 	$.ajax({
 		type : 'POST',
 		url : '/data',

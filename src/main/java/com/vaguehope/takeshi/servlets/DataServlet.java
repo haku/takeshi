@@ -24,8 +24,11 @@ import com.vaguehope.takeshi.helpers.ServletHelper;
 import com.vaguehope.takeshi.model.Castle;
 import com.vaguehope.takeshi.model.CastleId;
 
+/**
+ * http://wiki.fasterxml.com/JacksonInFiveMinutes
+ * https://github.com/vznet/mongo-jackson-mapper
+ */
 public class DataServlet extends HttpServlet {
-
 
 	public static final String CONTEXT = "/data";
 
