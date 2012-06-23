@@ -1,11 +1,23 @@
 body {
 	font-family: Arial, sans-serif;
-	background-color: #414c66;
+	background-color: #111;
 	color: #fff;
 }
 
-#canvas {
+#toolbar .button {
+	background-color: #414c66;
 	border: 1px solid #fff;
+	color: #fff;
+}
+
+#toolbar .button:hover {
+	background-color: #7185b3;
+}
+
+#canvasWrapper {
+	border: 1px solid #fff;
+	background-color: #414c66;
+	z-index: -1;
 }
 
 #canvas .menu a {

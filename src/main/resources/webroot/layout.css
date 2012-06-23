@@ -11,28 +11,31 @@ a:active, a:hover {
 	text-decoration: underline;
 }
 
-h1 {
+#title {
 	display: inline-block;
 	margin: 0.25em 0.5em 0 0.5em;
+	vertical-align: middle;
 }
 
 #toolbar {
 	display: inline-block;
-	margin: 0 0 0 0.5em;
-	vertical-align: bottom;
+	margin: 0.25em 0.5em 0.25em 0.5em;
+	vertical-align: middle;
 }
 
 #toolbar .button {
-	min-width: 3em;
+	min-width: 4em;
 	min-height: 3em;
 }
 
-#canvas {
+#canvas, #canvasWrapper {
 	position: fixed;
 	left: 0.5em;
 	top: 3em;
 	right: 0.5em;
 	bottom: 0.5em;
+	margin: 0; /* Must be zero or brakes JQuery position() */
+	padding: 0; /* Must be zero or brakes JQuery position() */
 }
 
 #canvas .menu {

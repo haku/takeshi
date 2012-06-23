@@ -21,13 +21,6 @@ public class Castle {
 		return this.id;
 	}
 
-	/**
-	 * Bad.
-	 */
-	public void setId (Long id) {
-		this.id = id;
-	}
-
 	public List<CastleNode> getNodes () {
 		return this.nodes;
 	}

@@ -1,7 +1,15 @@
 var divCanvas;
 var nextNodeId = 0;
+var castleId;
+
+function _reset() {
+	delete divCanvas;
+	nextNodeId = 0;
+	delete castleId;
+}
 
 function initCastleList(div) {
+	_reset();
 	div.empty();
 	var menu = $('<div class="menu">');
 	div.append(menu);
@@ -12,22 +20,25 @@ function initCastleList(div) {
 			link.text('Castle ' + val.id + ': ' + val.name);
 			link.click(function(event) {
 				event.preventDefault();
-				loadCastle(div, val.id);
+				_loadCastle(div, val.id);
 			});
 			menu.append(link);
 		});
 	});
 }
 
-function loadCastle(div, id) {
+function _loadCastle(div, id) {
+	_reset();
 	divCanvas = div;
 	divCanvas.empty();
 	$('#toolbar .add').click(_addNodeClickHandler);
 	divCanvas.dblclick(_canvasDblClickHandler);
 	$('#toolbar .save').click(_saveClickHandler);
 	if (id) {
+		castleId = id;
+		console.log('castleId', castleId);
 		$.getJSON('/data?id=' + id, function(data) {
-			$.each(data.nodes, function (index, node) {
+			$.each(data.nodes, function(index, node) {
 				_addNode(node.pos.left, node.pos.top, node.label);
 			});
 		});
@@ -47,7 +58,7 @@ function _canvasDblClickHandler(event) {
 function _addNode(x, y, label) {
 	var id = nextNodeId++;
 	var text = $('<p class="text">');
-	text.text(label ? label : id);
+	text.text( label ? label : id);
 	var node = $('<div class="node">');
 	node.attr('id', 'node' + id);
 	node.append(text);
@@ -58,11 +69,15 @@ function _addNode(x, y, label) {
 	});
 	node.click(_nodeClickHandler);
 	divCanvas.append(node);
-	if (x && y) {
-		node.offset({
-			left : x,
-			top : y
+	if (isNumber(x) && isNumber(y)) {
+		node.position({
+			my : 'left top',
+			at : 'left top',
+			of : divCanvas,
+			collision : 'none',
+			offset : x + ' ' + y
 		});
+		//console.log('drift', x, '=', node.position().left, y, '=', node.position().top);
 	}
 	else {
 		node.position({
@@ -97,6 +112,7 @@ function _saveClickHandler(event) {
 		});
 	});
 	var castle = {
+		id : castleId,
 		nodes : nodes
 	};
 	$.ajax({
@@ -119,6 +135,10 @@ function _saveClickHandler(event) {
 			alert('Save result: ' + textStatus);
 		}
 	});
+}
+
+function isNumber(n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
 }
 
 /* http://api.jquery.com/category/events/event-object/

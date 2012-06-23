@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.vz.mongodb.jackson.DBCursor;
 import net.vz.mongodb.jackson.JacksonDBCollection;
+import net.vz.mongodb.jackson.WriteResult;
 
 import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
@@ -30,6 +31,8 @@ import com.vaguehope.takeshi.model.CastleId;
  */
 public class DataServlet extends HttpServlet {
 
+
+
 	public static final String CONTEXT = "/data";
 
 	private static final Logger LOG = LoggerFactory.getLogger(DataServlet.class);
@@ -37,7 +40,8 @@ public class DataServlet extends HttpServlet {
 	private static final String DBNAME = "takeshi";
 	private static final String COLL_CASTLES = "castles";
 	private static final String PARAM_ID = "id";
-	private static final Long SINGLETON_ID = Long.valueOf(123456L); // FIXME support multiple docs.
+	private static final String CONTENT_TYPE_JSON = "text/json;charset=UTF-8";
+	private static final String CONTENT_TYPE_PLAIN = "text/plain;charset=UTF-8";
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final DB db;
@@ -56,7 +60,7 @@ public class DataServlet extends HttpServlet {
 			Long id = Long.valueOf(idRaw);
 			Castle result = this.collCastles.findOneById(id);
 			if (result != null) {
-				resp.setContentType("text/json;charset=UTF-8");
+				resp.setContentType(CONTENT_TYPE_JSON);
 				this.mapper.writeValue(w, result);
 			}
 			else {
@@ -64,30 +68,39 @@ public class DataServlet extends HttpServlet {
 			}
 		}
 		else {
-			resp.setContentType("text/plain;charset=UTF-8");
+			resp.setContentType(CONTENT_TYPE_PLAIN);
 			List<CastleId> ids = Lists.newArrayList();
 			DBCursor<Castle> cursor = this.collCastles.find();
 			while (cursor.hasNext()) {
 				Castle next = cursor.next();
 				ids.add(new CastleId(next));
 			}
-			resp.setContentType("text/json;charset=UTF-8");
+			resp.setContentType(CONTENT_TYPE_JSON);
 			this.mapper.writeValue(w, ids);
 		}
 	}
 
+	@SuppressWarnings("boxing")
 	@Override
 	protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String json = ServletHelper.validateStringParam(req, resp, "json");
 		if (json == null) return;
 
 		Castle castle = this.mapper.readValue(json, Castle.class);
-		castle.setId(SINGLETON_ID); //FIXME
-		this.collCastles.update(
-				new Castle(SINGLETON_ID),
+		if (castle.getId() == null || castle.getId().longValue() < 1L) {
+			ServletHelper.error(resp, HttpServletResponse.SC_BAD_REQUEST, "Castle ID is not valid: " + castle.getId());
+			return;
+		}
+
+		WriteResult<Castle, Long> result = this.collCastles.update(
+				new Castle(castle.getId()),
 				castle,
 				true, false);
-		LOG.info("Saved: {} {}", SINGLETON_ID, castle);
+		if (result.getN() != 1) {
+			ServletHelper.error(resp, HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to save castle: " + castle.getId());
+			return;
+		}
+		LOG.info("Saved castle: id={} n={}", castle.getId(), castle.getNodes().size());
 	}
 
 }
