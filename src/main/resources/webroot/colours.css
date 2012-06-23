@@ -8,6 +8,10 @@ body {
 	border: 1px solid #fff;
 }
 
+#canvas .menu a {
+	color: #fff;
+}
+
 #canvas .node {
 	border: 1px solid #fff;
 	background: #111;

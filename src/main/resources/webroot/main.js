@@ -2,6 +2,7 @@ var divCanvas;
 var nextNodeId = 0;
 
 function initCastleList(div) {
+	div.empty();
 	var menu = $('<div class="menu">');
 	div.append(menu);
 	$.getJSON('/data', function(data) {
@@ -11,14 +12,14 @@ function initCastleList(div) {
 			link.text('Castle ' + val.id + ': ' + val.name);
 			link.click(function(event) {
 				event.preventDefault();
-				initTakeshi(div, val.id);
+				loadCastle(div, val.id);
 			});
 			menu.append(link);
 		});
 	});
 }
 
-function initTakeshi(div, id) {
+function loadCastle(div, id) {
 	divCanvas = div;
 	divCanvas.empty();
 	$('#toolbar .add').click(_addNodeClickHandler);
@@ -26,9 +27,7 @@ function initTakeshi(div, id) {
 	$('#toolbar .save').click(_saveClickHandler);
 	if (id) {
 		$.getJSON('/data?id=' + id, function(data) {
-			console.log('l', data.nodes);
 			$.each(data.nodes, function (index, node) {
-				console.log('n', node);
 				_addNode(node.pos.left, node.pos.top, node.label);
 			});
 		});
