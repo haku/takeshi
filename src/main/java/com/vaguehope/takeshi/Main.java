@@ -12,6 +12,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.Mongo;
+import com.mongodb.MongoOptions;
+import com.mongodb.WriteConcern;
 import com.vaguehope.takeshi.reporter.JvmReporter;
 import com.vaguehope.takeshi.reporter.Reporter;
 import com.vaguehope.takeshi.reporter.SessionReporter;
@@ -46,7 +48,14 @@ public class Main {
 		sessionManager.addEventListener(sessionReporter);
 
 		// Services.
-		Mongo mongo = new Mongo();
+		// http://stackoverflow.com/questions/6520439/how-to-configure-mongodb-java-driver-mongooptions-for-production-use
+		MongoOptions mongoOptions = new MongoOptions();
+		mongoOptions.setAutoConnectRetry(true);
+		mongoOptions.setSocketTimeout(60000);
+		mongoOptions.setW(WriteConcern.SAFE.getW());
+		mongoOptions.setSocketTimeout(15000);
+		mongoOptions.setConnectTimeout(60000);
+		Mongo mongo = new Mongo("localhost", mongoOptions);
 
 		// Servlets.
 		servletHandler.addServlet(new ServletHolder(new DataServlet(mongo)), DataServlet.CONTEXT);
