@@ -16,7 +16,6 @@ import com.vaguehope.takeshi.reporter.JvmReporter;
 import com.vaguehope.takeshi.reporter.Reporter;
 import com.vaguehope.takeshi.reporter.SessionReporter;
 import com.vaguehope.takeshi.servlets.DataServlet;
-import com.vaguehope.takeshi.servlets.HelloWorldServlet;
 
 public class Main {
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -50,7 +49,6 @@ public class Main {
 		Mongo mongo = new Mongo();
 
 		// Servlets.
-		servletHandler.addServlet(new ServletHolder(new HelloWorldServlet()), HelloWorldServlet.CONTEXT);
 		servletHandler.addServlet(new ServletHolder(new DataServlet(mongo)), DataServlet.CONTEXT);
 
 		// Static files on classpath.
