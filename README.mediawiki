@@ -1,3 +1,4 @@
 == たけし ==
 
-process flow visualiser.
+Process flow visualiser.
+At the moment its just the very beginnings of the UI.
