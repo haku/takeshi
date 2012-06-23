@@ -2,23 +2,30 @@ package com.vaguehope.takeshi.model;
 
 import java.util.List;
 
-import javax.persistence.Id;
+import net.vz.mongodb.jackson.ObjectId;
+
+import org.codehaus.jackson.annotate.JsonProperty;
 
 import com.google.common.base.Objects;
 
 public class Castle {
 
-	@Id public Long id;
+	@ObjectId @JsonProperty("_id") public String id;
+	private String name;
 	private List<CastleNode> nodes;
 
 	public Castle () {}
 
-	public Castle (Long id) {
-		this.id = id;
+	public Castle (String name) {
+		this.name = name;
 	}
 
-	public Long getId () {
+	public String getId () {
 		return this.id;
+	}
+
+	public String getName () {
+		return this.name;
 	}
 
 	public List<CastleNode> getNodes () {

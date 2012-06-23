@@ -2,19 +2,19 @@ package com.vaguehope.takeshi.model;
 
 public class CastleId {
 
-	private final Long id;
+	private final String id;
 	private final String name;
 
-	public CastleId (Long id, String name) {
+	public CastleId (String id, String name) {
 		this.id = id;
 		this.name = name;
 	}
 
 	public CastleId (Castle c) {
-		this(c.getId(), "(" + c.getNodes().size() + " nodes)"); // FIXME better name.
+		this(c.getId(), c.getName());
 	}
 
-	public Long getId () {
+	public String getId () {
 		return this.id;
 	}
 

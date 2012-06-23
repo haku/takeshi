@@ -4,6 +4,10 @@ body {
 	color: #fff;
 }
 
+#title a:link, #title a:visited {
+	color: #fff;
+}
+
 #toolbar .button {
 	background-color: #414c66;
 	border: 1px solid #fff;

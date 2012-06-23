@@ -22,7 +22,7 @@ function initCastleList(div) {
 				event.preventDefault();
 				_loadCastle(div, val.id);
 			});
-			menu.append(link);
+			menu.append($('<p>').append(link));
 		});
 	});
 }
@@ -34,14 +34,26 @@ function _loadCastle(div, id) {
 	$('#toolbar .add').click(_addNodeClickHandler);
 	divCanvas.dblclick(_canvasDblClickHandler);
 	$('#toolbar .save').click(_saveClickHandler);
+	$('#toolbar .name').click(_nameClickHandler);
 	if (id) {
 		castleId = id;
 		console.log('castleId', castleId);
 		$.getJSON('/data?id=' + id, function(data) {
-			$.each(data.nodes, function(index, node) {
-				_addNode(node.pos.left, node.pos.top, node.label);
-			});
+			$('#toolbar .name').val(data.name);
+			if (data.nodes) {
+				$.each(data.nodes, function(index, node) {
+					_addNode(node.pos.left, node.pos.top, node.label);
+				});
+			}
 		});
+	}
+}
+
+function _nameClickHandler(event) {
+	event.preventDefault();
+	var name = prompt("Name", $(this).val());
+	if (name) {
+		$(this).val(name);
 	}
 }
 
@@ -104,6 +116,7 @@ function _nodeClickHandler(event) {
 
 function _saveClickHandler(event) {
 	event.preventDefault();
+	var castleName = $('#toolbar .name').val();
 	var nodes = [];
 	$('.node', divCanvas).each(function() {
 		var node = $(this);
@@ -117,7 +130,8 @@ function _saveClickHandler(event) {
 		});
 	});
 	var castle = {
-		id : castleId,
+		_id : castleId,
+		name : castleName,
 		nodes : nodes
 	};
 	$.ajax({
