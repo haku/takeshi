@@ -79,10 +79,10 @@ public class DataServlet extends HttpServlet {
 
 	@Override
 	protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		if (!doNew(req, resp)) doUpdate(req, resp);
+		if (!doNew(req)) doUpdate(req, resp);
 	}
 
-	private boolean doNew (HttpServletRequest req, HttpServletResponse resp) {
+	private boolean doNew (HttpServletRequest req) {
 		String name = req.getParameter(PARAM_NEW);
 		if (name != null && !name.isEmpty()) {
 			Castle castle = new Castle(name);
