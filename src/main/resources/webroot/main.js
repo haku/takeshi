@@ -1,4 +1,5 @@
 var divCanvas;
+var nextNodeId = 0;
 
 function initTakeshi(div) {
 	divCanvas = div;
@@ -11,11 +12,23 @@ function _addNodeClickHandler(event) {
 }
 
 function _addNode() {
+	var id = nextNodeId++;
+	var text = $('<p class="text">');
+	text.text(id);
 	var node = $('<div class="node">');
-	node.offset({
-		top : 10,
-		left : 30
-	});
+	node.attr('id', 'node' + id);
+	node.append(text);
 	node.draggable();
+	node.click(_nodeClickHandler);
 	divCanvas.append(node);
+	node.position({
+		my : 'center',
+		at : 'center',
+		of : divCanvas
+	});
+}
+
+function _nodeClickHandler(event) {
+	event.preventDefault();
+	alert('click: ' + this.id);
 }

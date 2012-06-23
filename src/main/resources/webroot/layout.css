@@ -19,12 +19,17 @@ h1 {
 	top: 3em;
 	right: 0.5em;
 	bottom: 0.5em;
-	border: 1px solid;
 }
 
 #canvas .node {
 	position: absolute;
-	width: 2em;
-	height: 3em;
-	border: 1px solid;
+	display: block;
+	width: 3em;
+	height: 2em;
+}
+
+#canvas .node .text {
+	text-align: center;
+	padding: 0;
+	margin: 0;
 }

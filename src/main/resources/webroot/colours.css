@@ -1,0 +1,18 @@
+body {
+	font-family: Arial, sans-serif;
+	background-color: #414c66;
+	color: #fff;
+}
+
+#canvas {
+	border: 1px solid #fff;
+}
+
+#canvas .node {
+	border: 1px solid #fff;
+	background: #111;
+}
+
+#canvas .node .text {
+	color: #fff;
+}
