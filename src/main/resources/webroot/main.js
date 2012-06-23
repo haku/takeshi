@@ -5,6 +5,7 @@ function initTakeshi(div) {
 	divCanvas = div;
 	$('#toolbar .add').click(_addNodeClickHandler);
 	divCanvas.dblclick(_canvasDblClickHandler);
+	$('#toolbar .save').click(_saveClickHandler);
 }
 
 function _addNodeClickHandler(event) {
@@ -53,6 +54,17 @@ function _nodeClickHandler(event) {
 	if (text) {
 		p.text(text)
 	}
+}
+
+function _saveClickHandler(event) {
+	event.preventDefault();
+	$('.node', divCanvas).each(function() {
+		var node = $(this);
+		var id = node.attr('id');
+		var pos = node.position();
+		var label = $('.text', node).text();
+		console.log('save node:', id, pos.left, pos.top, label);
+	});
 }
 
 /* http://api.jquery.com/category/events/event-object/
