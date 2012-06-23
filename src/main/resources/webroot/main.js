@@ -18,7 +18,11 @@ function _addNode() {
 	var node = $('<div class="node">');
 	node.attr('id', 'node' + id);
 	node.append(text);
-	node.draggable();
+	node.draggable({
+		containment : "parent",
+		grid : [20, 20],
+		stack : ".node"
+	});
 	node.click(_nodeClickHandler);
 	divCanvas.append(node);
 	node.position({
