@@ -2,6 +2,7 @@ package com.vaguehope.takeshi.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -15,11 +16,13 @@ import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.Lists;
 import com.mongodb.DB;
 import com.mongodb.Mongo;
 import com.vaguehope.takeshi.helpers.Numbers;
 import com.vaguehope.takeshi.helpers.ServletHelper;
 import com.vaguehope.takeshi.model.Castle;
+import com.vaguehope.takeshi.model.CastleId;
 
 public class DataServlet extends HttpServlet {
 
@@ -59,10 +62,14 @@ public class DataServlet extends HttpServlet {
 		}
 		else {
 			resp.setContentType("text/plain;charset=UTF-8");
+			List<CastleId> ids = Lists.newArrayList();
 			DBCursor<Castle> cursor = this.collCastles.find();
 			while (cursor.hasNext()) {
-				w.println(cursor.next().toString());
+				Castle next = cursor.next();
+				ids.add(new CastleId(next));
 			}
+			resp.setContentType("text/json;charset=UTF-8");
+			this.mapper.writeValue(w, ids);
 		}
 	}
 
