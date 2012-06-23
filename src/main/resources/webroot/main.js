@@ -58,12 +58,37 @@ function _nodeClickHandler(event) {
 
 function _saveClickHandler(event) {
 	event.preventDefault();
+	var jsonObj = [];
 	$('.node', divCanvas).each(function() {
 		var node = $(this);
 		var id = node.attr('id');
 		var pos = node.position();
 		var label = $('.text', node).text();
-		console.log('save node:', id, pos.left, pos.top, label);
+		jsonObj.push({
+			id : id,
+			pos : pos,
+			label : label
+		});
+	});
+	$.ajax({
+		type : 'POST',
+		url : '/data',
+		data : {
+			json : JSON.stringify(jsonObj)
+		},
+		beforeSend : function() {
+			console.log('Saving...');
+		},
+		success : function(response) {
+			console.log('Save successful.');
+		},
+		error : function(xhr) {
+			console.log('Save failed.', xhr);
+		},
+		complete : function(jqXHR, textStatus) {
+			console.log('Save complete.', jqXHR, textStatus);
+			alert('Save result: ' + textStatus);
+		}
 	});
 }
 
