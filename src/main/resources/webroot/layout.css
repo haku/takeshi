@@ -1,0 +1,30 @@
+body {
+	margin: 0;
+	padding: 0;
+}
+
+h1 {
+	display: inline-block;
+	margin: 0.25em 0.5em 0 0.5em;
+}
+
+#toolbar {
+	display: inline-block;
+	margin: 0 0 0 0.5em;
+}
+
+#canvas {
+	position: fixed;
+	left: 0.5em;
+	top: 3em;
+	right: 0.5em;
+	bottom: 0.5em;
+	border: 1px solid;
+}
+
+#canvas .node {
+	position: absolute;
+	width: 2em;
+	height: 3em;
+	border: 1px solid;
+}
