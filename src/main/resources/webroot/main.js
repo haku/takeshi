@@ -30,5 +30,7 @@ function _addNode() {
 
 function _nodeClickHandler(event) {
 	event.preventDefault();
-	alert('click: ' + this.id);
+	var p = $('.text', this);
+	var text = prompt("Label", p.text());
+	if (text) p.text(text)
 }
