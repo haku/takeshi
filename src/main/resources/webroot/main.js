@@ -3,33 +3,41 @@ var nextNodeId = 0;
 var castleId;
 
 function _reset() {
-	delete divCanvas;
 	nextNodeId = 0;
 	delete castleId;
 }
 
 function initCastleList(div) {
-	_reset();
-	div.empty();
+	divCanvas = div;
+	_loadMenu();
+}
+
+function _loadMenu() {
+	divCanvas.empty();
 	var menu = $('<div class="menu">');
-	div.append(menu);
+	divCanvas.append(menu);
+
+	var newLink = $('<a href="">');
+	newLink.text('New Castle');
+	newLink.click(_newCastleClickHandler);
+	menu.append($('<p>').append(newLink));
+
 	$.getJSON('/data', function(data) {
 		var castles = [];
 		$.each(data, function(key, val) {
 			var link = $('<a href="">');
-			link.text('Castle ' + val.id + ': ' + val.name);
+			link.text('Castle ' + val.name + ' (' + val.id + ')');
 			link.click(function(event) {
 				event.preventDefault();
-				_loadCastle(div, val.id);
+				_loadCastle(val.id);
 			});
 			menu.append($('<p>').append(link));
 		});
 	});
 }
 
-function _loadCastle(div, id) {
+function _loadCastle(id) {
 	_reset();
-	divCanvas = div;
 	divCanvas.empty();
 	$('#toolbar .add').click(_addNodeClickHandler);
 	divCanvas.dblclick(_canvasDblClickHandler);
@@ -45,6 +53,18 @@ function _loadCastle(div, id) {
 					_addNode(node.pos.left, node.pos.top, node.label);
 				});
 			}
+		});
+	}
+}
+
+function _newCastleClickHandler(event) {
+	event.preventDefault();
+	var name = prompt('Name', 'New Castle');
+	if (name) {
+		$.post('/data', {
+			'new' : name
+		}, function(data) {
+			_loadMenu();
 		});
 	}
 }
