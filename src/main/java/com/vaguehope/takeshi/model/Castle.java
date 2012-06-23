@@ -10,7 +10,7 @@ import com.google.common.base.Objects;
 
 public class Castle {
 
-	@ObjectId @JsonProperty("_id") public String id;
+	@ObjectId @JsonProperty("_id") private String id;
 	private String name;
 	private List<CastleNode> nodes;
 

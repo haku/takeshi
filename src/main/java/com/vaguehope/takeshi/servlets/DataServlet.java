@@ -42,12 +42,11 @@ public class DataServlet extends HttpServlet {
 	private static final String CONTENT_TYPE_PLAIN = "text/plain;charset=UTF-8";
 
 	private final ObjectMapper mapper = new ObjectMapper();
-	private final DB db;
 	private final JacksonDBCollection<Castle, String> collCastles;
 
 	public DataServlet (Mongo mongo) {
-		this.db = mongo.getDB(DBNAME);
-		this.collCastles = JacksonDBCollection.wrap(this.db.getCollection(COLL_CASTLES), Castle.class, String.class);
+		DB db = mongo.getDB(DBNAME);
+		this.collCastles = JacksonDBCollection.wrap(db.getCollection(COLL_CASTLES), Castle.class, String.class);
 	}
 
 	@Override
