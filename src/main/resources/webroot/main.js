@@ -58,23 +58,24 @@ function _nodeClickHandler(event) {
 
 function _saveClickHandler(event) {
 	event.preventDefault();
-	var jsonObj = [];
+	var nodes = [];
 	$('.node', divCanvas).each(function() {
 		var node = $(this);
 		var id = node.attr('id');
 		var pos = node.position();
 		var label = $('.text', node).text();
-		jsonObj.push({
+		nodes.push({
 			id : id,
 			pos : pos,
 			label : label
 		});
 	});
+	var castle = {nodes: nodes};
 	$.ajax({
 		type : 'POST',
 		url : '/data',
 		data : {
-			json : JSON.stringify(jsonObj)
+			json : JSON.stringify(castle)
 		},
 		beforeSend : function() {
 			console.log('Saving...');

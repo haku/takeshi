@@ -9,11 +9,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.codehaus.jackson.map.ObjectMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.mongodb.DB;
 import com.mongodb.Mongo;
+import com.vaguehope.takeshi.helpers.ServletHelper;
+import com.vaguehope.takeshi.model.Castle;
 
 public class DataServlet extends HttpServlet {
 
@@ -23,7 +26,8 @@ public class DataServlet extends HttpServlet {
 	private static final long serialVersionUID = 7860470592232818713L;
 	private static final String DBNAME = "takeshi";
 
-	private DB db;
+	private final ObjectMapper mapper = new ObjectMapper();
+	private final DB db;
 
 	public DataServlet (Mongo mongo) {
 		this.db = mongo.getDB(DBNAME);
@@ -39,8 +43,11 @@ public class DataServlet extends HttpServlet {
 
 	@Override
 	protected void doPost (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		String json = req.getParameter("json");
-		LOG.info("Save request: {}", json);
+		String json = ServletHelper.validateStringParam(req, resp, "json");
+		if (json == null) return;
+
+		Castle castle = this.mapper.readValue(json, Castle.class);
+		LOG.info("Save request: {}", castle);
 	}
 
 	public <T> void printCollection (PrintWriter w, String title, Collection<T> list) {
