@@ -92,8 +92,13 @@ function _nodeClickHandler(event) {
 	event.preventDefault();
 	var p = $('.text', this);
 	var text = prompt("Label", p.text());
-	if (text) {
-		p.text(text)
+	if (text != null) {
+		if (text == "") {
+			$(this).remove();
+		}
+		else {
+			p.text(text)
+		}
 	}
 }
 
