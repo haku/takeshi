@@ -1,5 +1,3 @@
-var LOOKFAR_HOST = 'https://lookfar.herokuapp.com';
-
 var divCanvas;
 
 function initLookfar(div) {
@@ -9,33 +7,23 @@ function initLookfar(div) {
 
 function _lookfarClickHandler(event) {
 	event.preventDefault();
-	$.ajax({
-		url : LOOKFAR_HOST + '/update',
-		cache : false,
-		xhrFields : {
-			withCredentials : true
-		},
-		dataType : 'json',
-		success : function(data, textStatus, jqXHR) {
-			//console.log('success', data, textStatus, jqXHR);
-			_applyData(data);
-		},
-		error : function(jqXHR, textStatus, errorThrown) {
-			console.log('error', jqXHR, textStatus, errorThrown);
-		}
+	$.getJSON('/status', function(data) {
+		_applyData(data);
 	});
 }
 
 function _applyData(data) {
 	var stati = _summariseNodes(data);
-	//console.log('stati', stati);
 	$('.node', divCanvas).each(function(index, node) {
 		var nodeName = $('.text', node).text();
 		var status = stati[nodeName];
 		if (status) {
-			var statE = $('<p class="status">');
+			var statE = $('.status', node);
+			if (statE.size() < 1) {
+				var statE = $('<p class="status">');
+				$(node).append(statE);
+			}
 			statE.text(status);
-			$(node).append(statE);
 		}
 	});
 }
@@ -43,7 +31,6 @@ function _applyData(data) {
 function _summariseNodes(data) {
 	var nodes = {};
 	$.each(data, function(index, datum) {
-		//console.log('datum', datum);
 		var oldFlag = nodes[datum.node];
 		if (!oldFlag || _getFlagValue(oldFlag) < _getFlagValue(datum.flag)) {
 			nodes[datum.node] = datum.flag;
