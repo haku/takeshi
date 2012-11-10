@@ -1,4 +1,4 @@
-package com.vaguehope.takeshi;
+package com.vaguehope.takeshi.config;
 
 public interface Config {
 

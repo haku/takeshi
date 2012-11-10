@@ -14,6 +14,8 @@ import org.slf4j.LoggerFactory;
 import com.mongodb.Mongo;
 import com.mongodb.MongoOptions;
 import com.mongodb.WriteConcern;
+import com.vaguehope.takeshi.config.Config;
+import com.vaguehope.takeshi.config.Modes;
 import com.vaguehope.takeshi.reporter.JvmReporter;
 import com.vaguehope.takeshi.reporter.Reporter;
 import com.vaguehope.takeshi.reporter.SessionReporter;
@@ -65,7 +67,7 @@ public class Main {
 		resourceHandler.setDirectoriesListed(false);
 		resourceHandler.setWelcomeFiles(new String[] { "index.html" });
 		resourceHandler.setResourceBase(
-				Boolean.parseBoolean(System.getenv("DEBUG")) ?
+				Modes.isDebug() ?
 						"./src/main/resources/webroot" :
 						Main.class.getResource("/webroot").toExternalForm()
 				);
