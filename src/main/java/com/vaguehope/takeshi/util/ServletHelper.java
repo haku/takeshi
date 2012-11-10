@@ -1,6 +1,6 @@
-package com.vaguehope.takeshi.helpers;
+package com.vaguehope.takeshi.util;
 
-import static com.vaguehope.takeshi.helpers.Numbers.isNumeric;
+import static com.vaguehope.takeshi.util.Numbers.isNumeric;
 
 import java.io.IOException;
 

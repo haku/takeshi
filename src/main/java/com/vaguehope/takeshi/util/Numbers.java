@@ -1,4 +1,4 @@
-package com.vaguehope.takeshi.helpers;
+package com.vaguehope.takeshi.util;
 
 public final class Numbers {
 	

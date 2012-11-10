@@ -1,7 +1,6 @@
 package com.vaguehope.takeshi.servlets;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -20,9 +19,10 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Lists;
 import com.mongodb.DB;
 import com.mongodb.Mongo;
-import com.vaguehope.takeshi.helpers.ServletHelper;
 import com.vaguehope.takeshi.model.Castle;
 import com.vaguehope.takeshi.model.CastleId;
+import com.vaguehope.takeshi.util.Http;
+import com.vaguehope.takeshi.util.ServletHelper;
 
 /**
  * http://wiki.fasterxml.com/JacksonInFiveMinutes
@@ -34,12 +34,11 @@ public class DataServlet extends HttpServlet {
 
 	private static final Logger LOG = LoggerFactory.getLogger(DataServlet.class);
 	private static final long serialVersionUID = 7860470592232818713L;
+
 	private static final String DBNAME = "takeshi";
 	private static final String COLL_CASTLES = "castles";
 	private static final String PARAM_ID = "id";
 	private static final String PARAM_NEW = "new";
-	private static final String CONTENT_TYPE_JSON = "text/json;charset=UTF-8";
-	private static final String CONTENT_TYPE_PLAIN = "text/plain;charset=UTF-8";
 
 	private final ObjectMapper mapper = new ObjectMapper();
 	private final JacksonDBCollection<Castle, String> collCastles;
@@ -51,28 +50,26 @@ public class DataServlet extends HttpServlet {
 
 	@Override
 	protected void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		PrintWriter w = resp.getWriter();
 		String id = req.getParameter(PARAM_ID);
 		if (id != null && !id.isEmpty()) {
 			Castle result = this.collCastles.findOneById(id);
 			if (result != null) {
-				resp.setContentType(CONTENT_TYPE_JSON);
-				this.mapper.writeValue(w, result);
+				resp.setContentType(Http.CONTENT_TYPE_JSON);
+				this.mapper.writeValue(resp.getWriter(), result);
 			}
 			else {
 				ServletHelper.error(resp, HttpServletResponse.SC_BAD_REQUEST, "Invalid ID: " + id);
 			}
 		}
 		else {
-			resp.setContentType(CONTENT_TYPE_PLAIN);
 			List<CastleId> ids = Lists.newArrayList();
 			DBCursor<Castle> cursor = this.collCastles.find();
 			while (cursor.hasNext()) {
 				Castle next = cursor.next();
 				ids.add(new CastleId(next));
 			}
-			resp.setContentType(CONTENT_TYPE_JSON);
-			this.mapper.writeValue(w, ids);
+			resp.setContentType(Http.CONTENT_TYPE_JSON);
+			this.mapper.writeValue(resp.getWriter(), ids);
 		}
 	}
 
