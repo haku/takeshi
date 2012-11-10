@@ -167,15 +167,14 @@ function _saveClickHandler(event) {
 		beforeSend : function() {
 			pStatus.text('Saving...');
 		},
-		success : function(response) {
-			console.log('Save successful.');
+		success : function(data, textStatus, jqXHR) {
+			pStatus.text('Save successful.');
 		},
-		error : function(xhr) {
-			console.log('Save failed.', xhr);
+		error : function(jqXHR, textStatus, errorThrown) {
+			pStatus.text('Save failed: ' + textStatus);
 		},
 		complete : function(jqXHR, textStatus) {
 			console.log('Save complete.', jqXHR, textStatus);
-			pStatus.text('Save result: ' + textStatus);
 		}
 	});
 }

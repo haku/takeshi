@@ -17,8 +17,22 @@ function _lookfarClickHandler(event) {
 }
 
 function _refreshLookfarData() {
-	$.getJSON('/status', function(data) {
-		_applyData(data);
+	$.ajax({
+		url : '/status',
+		dataType: 'json',
+		beforeSend : function() {
+			pStatus.text('Refreshing status data...');
+		},
+		success : function(data, textStatus, jqXHR) {
+			_applyData(data);
+			pStatus.text('Status data updated at ' + new Date().toLocaleTimeString() + '.');
+		},
+		error : function(jqXHR, textStatus, errorThrown) {
+			pStatus.text('Failed to fetch status data: ' + textStatus);
+		},
+		complete : function(jqXHR, textStatus) {
+			console.log('Status fetch complete.', jqXHR, textStatus);
+		}
 	});
 }
 
@@ -36,7 +50,6 @@ function _applyData(data) {
 			statE.text(status);
 		}
 	});
-	pStatus.text('Status data updated at ' + new Date().toLocaleTimeString() + '.');
 }
 
 function _summariseNodes(data) {
