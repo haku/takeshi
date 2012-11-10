@@ -96,7 +96,7 @@ function _addNode(x, y, label) {
 	node.append(text);
 	node.draggable({
 		containment : "parent",
-		grid : [20, 20],
+		//grid : [20, 20],
 		stack : ".node"
 	});
 	node.click(_nodeClickHandler);
