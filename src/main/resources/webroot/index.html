@@ -15,8 +15,9 @@
 		<script type="text/javascript">
 			$(document).ready(function() {
 				var canvas = $('#canvas');
-				initCastleList(canvas);
-				initLookfar(canvas);
+				var status = $('#status');
+				initCastleList(canvas, status);
+				initLookfar(canvas, status);
 			});
 		</script>
 	</head>
@@ -28,6 +29,7 @@
 			<input type="submit" value="name" class="button name"/>
 			<input type="submit" value="lookfar" class="button lookfar"/>
 		</span>
+		<p id="status"></p>
 		<div id="canvasWrapper">
 			<div id="canvas"></div>
 		</div>

@@ -28,10 +28,14 @@ a:active, a:hover {
 	min-height: 3em;
 }
 
+#status {
+	margin: 0.25em 0.5em 0.25em 0.5em;
+}
+
 #canvas, #canvasWrapper {
 	position: fixed;
 	left: 0.5em;
-	top: 3em;
+	top: 5em;
 	right: 0.5em;
 	bottom: 0.5em;
 	margin: 0; /* Must be zero or brakes JQuery position() */

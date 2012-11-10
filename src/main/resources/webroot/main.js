@@ -1,4 +1,5 @@
 var divCanvas;
+var pStatus;
 var nextNodeId = 0;
 var castleId;
 
@@ -7,8 +8,9 @@ function _reset() {
 	delete castleId;
 }
 
-function initCastleList(div) {
-	divCanvas = div;
+function initCastleList(canvas, status) {
+	divCanvas = canvas;
+	pStatus = status;
 	_loadMenu();
 }
 
@@ -34,6 +36,7 @@ function _loadMenu() {
 			menu.append($('<p>').append(link));
 		});
 	});
+	pStatus.text('Castle list refreshed.');
 }
 
 function _loadCastle(id) {
@@ -54,6 +57,7 @@ function _loadCastle(id) {
 				});
 			}
 		});
+		pStatus.text('Loaded castle ' + castleId + '.');
 	}
 }
 
@@ -161,7 +165,7 @@ function _saveClickHandler(event) {
 			json : JSON.stringify(castle)
 		},
 		beforeSend : function() {
-			console.log('Saving...');
+			pStatus.text('Saving...');
 		},
 		success : function(response) {
 			console.log('Save successful.');
@@ -171,7 +175,7 @@ function _saveClickHandler(event) {
 		},
 		complete : function(jqXHR, textStatus) {
 			console.log('Save complete.', jqXHR, textStatus);
-			alert('Save result: ' + textStatus);
+			pStatus.text('Save result: ' + textStatus);
 		}
 	});
 }

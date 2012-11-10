@@ -1,8 +1,10 @@
 var LOOKFAR_REFRESH_MILLIS = 300000; // 5 min.
 var divCanvas;
+var pStatus;
 
-function initLookfar(div) {
-	divCanvas = div;
+function initLookfar(canvas, status) {
+	divCanvas = canvas;
+	pStatus = status;
 	$('#toolbar .lookfar').click(_lookfarClickHandler);
 	setInterval(function() {
 		_refreshLookfarData();
@@ -34,6 +36,7 @@ function _applyData(data) {
 			statE.text(status);
 		}
 	});
+	pStatus.text('Status data updated at ' + new Date().toLocaleTimeString() + '.');
 }
 
 function _summariseNodes(data) {
