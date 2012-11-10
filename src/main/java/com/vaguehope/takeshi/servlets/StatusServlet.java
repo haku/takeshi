@@ -5,8 +5,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpHost;
@@ -21,14 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.vaguehope.takeshi.util.Http;
-import com.vaguehope.takeshi.util.ServletHelper;
 
-public class StatusServlet extends HttpServlet {
+public class StatusServlet extends CacheingServlet {
 
 	public static final String CONTEXT = "/status";
 
 	private static final Logger LOG = LoggerFactory.getLogger(StatusServlet.class);
 	private static final long serialVersionUID = 5567588027933022522L;
+	private static final HttpData LOOKFAR_UNAVAILABLE = new HttpData(HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Lookfar integration not available.");
 
 	private final URL lookfarUrl;
 	private final DefaultHttpClient httpClient;
@@ -60,25 +58,17 @@ public class StatusServlet extends HttpServlet {
 	}
 
 	@Override
-	protected void doGet (HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		if (this.lookfarUrl == null) {
-			ServletHelper.error(resp, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Lookfar integration not available.");
-		}
-		else {
-			// TODO basic auth.
-			HttpGet get = new HttpGet(this.lookfarUrl + "/update");
-			HttpResponse result = this.httpClient.execute(get);
-			StatusLine status = result.getStatusLine();
-			if (status.getStatusCode() == HttpServletResponse.SC_OK) {
-				resp.setContentType(Http.CONTENT_TYPE_JSON);
-				resp.getWriter().write(EntityUtils.toString(result.getEntity()));
-			}
-			else {
-				LOG.warn("Failed to fetch Lookfar status: {} {}", String.valueOf(status.getStatusCode()), status.getReasonPhrase());
-				EntityUtils.consumeQuietly(result.getEntity());
-				ServletHelper.error(resp, HttpServletResponse.SC_SERVICE_UNAVAILABLE, "Lookfar integration not available.");
-			}
-		}
+	protected HttpData doRealGet () throws ServletException, IOException {
+		if (this.lookfarUrl == null) return LOOKFAR_UNAVAILABLE;
+
+		HttpGet get = new HttpGet(this.lookfarUrl + "/update");
+		HttpResponse result = this.httpClient.execute(get);
+		StatusLine status = result.getStatusLine();
+		if (status.getStatusCode() == HttpServletResponse.SC_OK) return new HttpData(Http.CONTENT_TYPE_JSON, EntityUtils.toString(result.getEntity()));
+
+		LOG.warn("Failed to fetch Lookfar status: {} {}", String.valueOf(status.getStatusCode()), status.getReasonPhrase());
+		EntityUtils.consumeQuietly(result.getEntity());
+		return LOOKFAR_UNAVAILABLE;
 	}
 
 	private static URL safeUrlParse (String urlRaw) {
