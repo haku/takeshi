@@ -20,6 +20,7 @@ import com.vaguehope.takeshi.reporter.JvmReporter;
 import com.vaguehope.takeshi.reporter.Reporter;
 import com.vaguehope.takeshi.reporter.SessionReporter;
 import com.vaguehope.takeshi.servlets.DataServlet;
+import com.vaguehope.takeshi.servlets.StatusServlet;
 
 public class Main {
 //	- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
@@ -61,6 +62,7 @@ public class Main {
 
 		// Servlets.
 		servletHandler.addServlet(new ServletHolder(new DataServlet(mongo)), DataServlet.CONTEXT);
+		servletHandler.addServlet(new ServletHolder(new StatusServlet()), StatusServlet.CONTEXT);
 
 		// Static files on classpath.
 		ResourceHandler resourceHandler = new ResourceHandler();
