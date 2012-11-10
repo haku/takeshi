@@ -1,12 +1,20 @@
+var LOOKFAR_REFRESH_MILLIS = 300000; // 5 min.
 var divCanvas;
 
 function initLookfar(div) {
 	divCanvas = div;
 	$('#toolbar .lookfar').click(_lookfarClickHandler);
+	setInterval(function() {
+		_refreshLookfarData();
+	}, LOOKFAR_REFRESH_MILLIS);
 }
 
 function _lookfarClickHandler(event) {
 	event.preventDefault();
+	_refreshLookfarData();
+}
+
+function _refreshLookfarData() {
 	$.getJSON('/status', function(data) {
 		_applyData(data);
 	});
