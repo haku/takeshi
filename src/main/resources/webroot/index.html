@@ -9,11 +9,13 @@
 		<script src="vendor/jquery.ui.touch-punch.js"></script>
 		<script src="vendor/json2.js"></script>
 		<script src="main.js"></script>
+		<script src="lookfar.js"></script>
 		<link href="layout.css" type="text/css" rel="stylesheet">
 		<link href="colours.css" type="text/css" rel="stylesheet">
 		<script type="text/javascript">
 			$(document).ready(function() {
 				initCastleList($('#canvas'));
+				initLookfar();
 			});
 		</script>
 	</head>
@@ -23,6 +25,7 @@
 			<input type="submit" value="add" class="button add"/>
 			<input type="submit" value="save" class="button save"/>
 			<input type="submit" value="name" class="button name"/>
+			<input type="submit" value="lookfar" class="button lookfar"/>
 		</span>
 		<div id="canvasWrapper">
 			<div id="canvas"></div>
