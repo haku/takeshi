@@ -36,10 +36,6 @@ public class Main {
 		Reporter reporter = new Reporter(new JvmReporter());
 		reporter.start();
 
-		// Servlet container.
-		ServletContextHandler servletHandler = new ServletContextHandler();
-		servletHandler.setContextPath("/");
-
 		// Services.
 		// http://stackoverflow.com/questions/6520439/how-to-configure-mongodb-java-driver-mongooptions-for-production-use
 		MongoOptions mongoOptions = new MongoOptions();
@@ -49,6 +45,10 @@ public class Main {
 		mongoOptions.setSocketTimeout(15000);
 		mongoOptions.setConnectTimeout(60000);
 		Mongo mongo = new Mongo("localhost", mongoOptions);
+
+		// Servlet container.
+		ServletContextHandler servletHandler = new ServletContextHandler();
+		servletHandler.setContextPath("/");
 
 		// Servlets.
 		servletHandler.addServlet(new ServletHolder(new DataServlet(mongo)), DataServlet.CONTEXT);
@@ -69,21 +69,21 @@ public class Main {
 		handlers.setHandlers(new Handler[] { resourceHandler, servletHandler });
 
 		// Listening connector.
-		String portString = System.getenv("PORT"); // Heroko pattern.
+		int port = Integer.parseInt(System.getenv("PORT")); // Heroko pattern.
 		SelectChannelConnector connector = new SelectChannelConnector();
 		connector.setMaxIdleTime(Config.SERVER_MAX_IDLE_TIME_MS);
 		connector.setAcceptors(Config.SERVER_ACCEPTORS);
 		connector.setStatsOn(false);
 		connector.setLowResourcesConnections(Config.SERVER_LOW_RESOURCES_CONNECTIONS);
 		connector.setLowResourcesMaxIdleTime(Config.SERVER_LOW_RESOURCES_MAX_IDLE_TIME_MS);
-		connector.setPort(Integer.parseInt(portString));
+		connector.setPort(port);
 
 		// Start server.
 		this.server = new Server();
 		this.server.setHandler(handlers);
 		this.server.addConnector(connector);
 		this.server.start();
-		LOG.info("Server ready on port " + portString + ".");
+		LOG.info("Server ready on port " + System.getenv("PORT") + ".");
 	}
 
 	public void join () throws InterruptedException {
