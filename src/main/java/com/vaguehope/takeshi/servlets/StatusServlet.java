@@ -35,7 +35,7 @@ public class StatusServlet extends CacheingServlet {
 		URL url = safeUrlParse(System.getenv("LOOKFAR_URL"));
 		DefaultHttpClient hc = null;
 		if (url == null) {
-			LOG.info("Env var LOOKFAR_URL not set or invalid.  Lookfar integration disabled.");
+			LOG.warn("Env var LOOKFAR_URL not set or invalid.  Lookfar integration disabled.");
 		}
 		else {
 			String[] userInfo = (url.getUserInfo() == null ? "" : url.getUserInfo()).split(":");
@@ -62,11 +62,15 @@ public class StatusServlet extends CacheingServlet {
 		if (this.lookfarUrl == null) return LOOKFAR_UNAVAILABLE;
 
 		HttpGet get = new HttpGet(this.lookfarUrl + "/update");
+		final long statTime = System.currentTimeMillis();
 		HttpResponse result = this.httpClient.execute(get);
 		StatusLine status = result.getStatusLine();
-		if (status.getStatusCode() == HttpServletResponse.SC_OK) return new HttpData(Http.CONTENT_TYPE_JSON, EntityUtils.toString(result.getEntity()));
+		if (status.getStatusCode() == HttpServletResponse.SC_OK) {
+			LOG.info("Lookfar data fetched in {} millis.", String.valueOf(System.currentTimeMillis() - statTime));
+			return new HttpData(Http.CONTENT_TYPE_JSON, EntityUtils.toString(result.getEntity()));
+		}
 
-		LOG.warn("Failed to fetch Lookfar status: {} {}", String.valueOf(status.getStatusCode()), status.getReasonPhrase());
+		LOG.warn("Failed to fetch Lookfar data: {} {}", String.valueOf(status.getStatusCode()), status.getReasonPhrase());
 		EntityUtils.consumeQuietly(result.getEntity());
 		return LOOKFAR_UNAVAILABLE;
 	}
