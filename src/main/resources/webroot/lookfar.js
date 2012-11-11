@@ -56,21 +56,21 @@ function _summariseNodes(data) {
 	var nodes = {};
 	$.each(data, function(index, datum) {
 		var oldFlag = nodes[datum.node];
-		if (!oldFlag || _getFlagValue(oldFlag) < _getFlagValue(datum.flag)) {
+		if (!oldFlag || (oldFlag && _getFlagValue(oldFlag) < _getFlagValue(datum.flag))) {
 			nodes[datum.node] = datum.flag;
 		}
 	});
 	return nodes;
 }
 
-function _getFlagValue(flag) {
-	var v = FLAG_VALUE[flag]
-	return v ? v : 100;
-}
-
 var FLAG_VALUE = {
-	'OK' : 0,
-	'EXPIRED' : 1,
-	'WARNING' : 2,
-	'INVALID' : 3
+	'OK' : 1,
+	'EXPIRED' : 2,
+	'WARNING' : 3,
+	'INVALID' : 4
+};
+
+function _getFlagValue(flag) {
+	var v = flag ? FLAG_VALUE[flag.toUpperCase()] : undefined;
+	return v ? v : 100;
 }
