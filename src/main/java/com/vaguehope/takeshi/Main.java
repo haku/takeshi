@@ -2,7 +2,6 @@ package com.vaguehope.takeshi;
 
 import org.eclipse.jetty.server.Handler;
 import org.eclipse.jetty.server.Server;
-import org.eclipse.jetty.server.SessionManager;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
@@ -18,7 +17,6 @@ import com.vaguehope.takeshi.config.Config;
 import com.vaguehope.takeshi.config.Modes;
 import com.vaguehope.takeshi.reporter.JvmReporter;
 import com.vaguehope.takeshi.reporter.Reporter;
-import com.vaguehope.takeshi.reporter.SessionReporter;
 import com.vaguehope.takeshi.servlets.DataServlet;
 import com.vaguehope.takeshi.servlets.StatusServlet;
 
@@ -35,20 +33,12 @@ public class Main {
 
 	public Main () throws Exception { // NOSONAR Exception is throw by Server.start().
 		// Reporting.
-		SessionReporter sessionReporter = new SessionReporter();
-		Reporter reporter = new Reporter(new JvmReporter(), sessionReporter);
+		Reporter reporter = new Reporter(new JvmReporter());
 		reporter.start();
 
 		// Servlet container.
-		ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+		ServletContextHandler servletHandler = new ServletContextHandler();
 		servletHandler.setContextPath("/");
-
-		// Session management.
-		SessionManager sessionManager = servletHandler.getSessionHandler().getSessionManager();
-		sessionManager.setMaxInactiveInterval(Config.SERVER_SESSION_INACTIVE_TIMEOUT_SECONDS);
-		sessionManager.setMaxCookieAge(Config.SERVER_SESSION_INACTIVE_TIMEOUT_SECONDS);
-		sessionManager.setSessionIdPathParameterName(null);
-		sessionManager.addEventListener(sessionReporter);
 
 		// Services.
 		// http://stackoverflow.com/questions/6520439/how-to-configure-mongodb-java-driver-mongooptions-for-production-use
